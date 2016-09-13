@@ -12,23 +12,23 @@ h1 {
 h2 {
   color: green; }
 
-.red {
+#red {
   background-color: red;
   border-top-left-radius: 100%;
   border-right: 2px solid #f0f0f0;
   border-bottom: 2px solid #f0f0f0; }
 
-.green {
+#green {
   background-color: green;
   border-top-right-radius: 100%;
   border-bottom: 2px solid #f0f0f0; }
 
-.blue {
+#blue {
   background-color: blue;
   border-bottom-left-radius: 100%;
   border-right: 2px solid #f0f0f0; }
 
-.yellow {
+#yellow {
   background-color: yellow;
   border-bottom-right-radius: 100%; }
 

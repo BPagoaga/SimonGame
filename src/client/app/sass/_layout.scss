@@ -2,26 +2,26 @@ $border_thickness: 2px;
 $middle: 150px;
 $simon: 400px;
 
-.red {
+#red {
   background-color: red;
   border-top-left-radius: 100%;
   border-right: $border_thickness solid #f0f0f0;
   border-bottom: $border_thickness solid #f0f0f0;
 }
 
-.green {
+#green {
   background-color: green;
   border-top-right-radius: 100%;
   border-bottom: $border_thickness solid #f0f0f0;
 }
 
-.blue {
+#blue {
   background-color: blue;
   border-bottom-left-radius: 100%;
   border-right: $border_thickness solid #f0f0f0;
 }
 
-.yellow {
+#yellow {
   background-color: yellow;
   border-bottom-right-radius: 100%;
 }

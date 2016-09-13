@@ -56,8 +56,31 @@
 	var _Simon = __webpack_require__(/*! ./Simon.js */ 2);
 	
 	var _Simon2 = _interopRequireDefault(_Simon);
-
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	//
+	var padNodeList = document.querySelectorAll('.pad');
+	//
+	var padList = [];
+	//
+	var clickedItems = _Simon2.default.getArr();
+	
+	for (var i = 0; i < padNodeList.length; ++i) {
+	  padList.push(padNodeList[i]);
+	}
+	
+	// console.log(padList) => [{},{},{},{}]
+	
+	// attaching listeners for the click on each pad
+	padList.map(function (pad) {
+	  pad.addEventListener('click', function () {
+	    _Simon2.default.addToArr(pad.id);
+	  });
+	});
+	
+	// printing randArr
+	console.log(_Simon2.default.generateRandArr(padList));
 
 /***/ },
 /* 1 */
@@ -77,13 +100,36 @@
 
 	"use strict";
 	
-	var Simon = function Simon() {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var Simon = function () {
 	  // private attributes
+	  var stage = 0;
+	  var arr = [];
 	
 	  return {
 	    // public methods
+	    addToArr: function addToArr(item) {
+	      arr.push(item);
+	      console.log(arr);
+	    },
+	    generateRandArr: function generateRandArr(padList) {
+	      var randArr = [];
+	
+	      padList.map(function (pad) {
+	        randArr.push(pad.id);
+	      });
+	
+	      return randArr;
+	    },
+	    getArr: function getArr() {
+	      return arr;
+	    }
 	  };
-	};
+	}();
+	
+	exports.default = Simon;
 
 /***/ }
 /******/ ]);
