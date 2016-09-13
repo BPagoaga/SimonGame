@@ -1,0 +1,71 @@
+$border_thickness: 2px;
+$middle: 150px;
+$simon: 400px;
+
+.red {
+  background-color: red;
+  border-top-left-radius: 100%;
+  border-right: $border_thickness solid #f0f0f0;
+  border-bottom: $border_thickness solid #f0f0f0;
+}
+
+.green {
+  background-color: green;
+  border-top-right-radius: 100%;
+  border-bottom: $border_thickness solid #f0f0f0;
+}
+
+.blue {
+  background-color: blue;
+  border-bottom-left-radius: 100%;
+  border-right: $border_thickness solid #f0f0f0;
+}
+
+.yellow {
+  background-color: yellow;
+  border-bottom-right-radius: 100%;
+}
+
+.container {
+  height: 75vh;
+  width: 75vw;
+  margin: 0 auto;
+}
+
+.simon {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  height: $simon;
+  width: $simon;
+  padding: 3%;
+  margin: auto;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+}
+
+.pad {
+  height: 50%;
+  width: calc(50% - #{$border_thickness});
+  opacity: 0.6;
+  transition: all 300ms ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    opacity: 1;
+  }
+}
+
+.middle-btn {
+  background-color: #808080;
+  position: absolute;
+  height: $middle;
+  width: $middle;
+  border-radius: 50%;
+  top: calc( ( #{$simon} - #{$middle} / 2 ) / 2 );
+  left: calc( ( #{$simon} - #{$middle} / 2 ) / 2 );
+  border: $border_thickness solid #f0f0f0;
+}
