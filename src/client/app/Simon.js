@@ -1,27 +1,37 @@
 const Simon = (() => {
   // private attributes
-  let stage = 0
-  let arr = []
+  let userArr = []
+  let randArr = []
+  const colorArr = ['red', 'green', 'blue', 'yellow']
 
   return {
     // public methods
+
     addToArr(item){
-      arr.push(item)
-      console.log(arr)
+      userArr.push(item)
     },
 
-    generateRandArr(padList){
-      let randArr = []
+    generateRandArr(j=1){
 
-      padList.map( (pad) => {
-        randArr.push(pad.id)
-      })
+      for( var i = 0; i<j; i++){
+        let n = Math.floor(Math.random()*4)
 
+        randArr.push(colorArr[n])
+      }
       return randArr
     },
 
-    getArr(){
-      return arr
+    getUserArr(){
+      return userArr
+    },
+
+    getRandArr(){
+      return randArr
+    },
+
+    emptyArr(){
+      userArr = []
+      randArr = []
     }
   }
 })()

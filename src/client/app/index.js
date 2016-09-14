@@ -1,5 +1,5 @@
 import StyleSheet from './style.scss'
-
+import PlayGame from './PlayGame.js'
 import Simon from './Simon.js'
 
 //
@@ -7,7 +7,17 @@ const padNodeList = document.querySelectorAll('.pad')
 //
 let padList = []
 //
-let clickedItems = Simon.getArr()
+let clickedItems = []
+let reference = []
+let msg = {
+  start: "Start",
+  init: "Game Started"
+}
+
+//elements
+let middleBtn = document.getElementById('middle-btn')
+middleBtn.firstChild.innerHTML = msg.start
+
 
 for (var i = 0; i < padNodeList.length; ++i) {
   padList.push(padNodeList[i])
@@ -15,14 +25,27 @@ for (var i = 0; i < padNodeList.length; ++i) {
 
 // console.log(padList) => [{},{},{},{}]
 
-// attaching listeners for the click on each pad
-padList.map((pad) => {
-  pad.addEventListener('click', () => {
-    Simon.addToArr(pad.id)
-  })
+
+// Play the game !
+middleBtn.addEventListener('click', function(){
+  if(!PlayGame.isStarted()){
+    PlayGame.init()
+    middleBtn.firstChild.innerHTML = msg.init
+    PlayGame.startGame()
+  }
 })
 
-// printing randArr
-console.log(Simon.generateRandArr(padList))
+
+//display simon random array !
+reference = Simon.getRandArr()
+reference.map( (e) => console.log(e) )
+
+//user input
+PlayGame.userPlay(padList, PlayGame.isOk)
+// return true => next step
+// return false => game over
+// simon play the game
+//...
+
 
 

@@ -1,6 +1,35 @@
 $border_thickness: 2px;
-$middle: 150px;
-$simon: 400px;
+$middle: 10vw;
+
+
+@media screen and (max-width: 768px){
+  $simon: 80vw;
+
+  .simon {
+    height: $simon;
+    width: $simon;
+  }
+
+  #middle-btn {
+    top: calc( ( ( #{$simon} - #{$middle}) / 2));
+    left: calc( ( ( #{$simon} - #{$middle}) / 2) - 4px);
+  }
+}
+
+@media screen and (min-width: 769px){
+  $simon: 90vh;
+
+  .simon {
+    height: $simon;
+    width: $simon;
+  }
+
+  #middle-btn {
+    top: calc( ( #{$simon} - #{$middle}) / 2);
+    left: calc( ( ( #{$simon} - #{$middle}) / 2) - 4px);
+  }
+}
+
 
 #red {
   background-color: red;
@@ -36,8 +65,6 @@ $simon: 400px;
   display: flex;
   flex-wrap: wrap;
   position: relative;
-  height: $simon;
-  width: $simon;
   padding: 3%;
   margin: auto;
   background-color: #f0f0f0;
@@ -47,25 +74,34 @@ $simon: 400px;
 .pad {
   height: 50%;
   width: calc(50% - #{$border_thickness});
-  opacity: 0.6;
-  transition: all 300ms ease;
+  opacity: 0.5;
 
   &:hover {
-    opacity: 0.8;
+    opacity: 0.7;
   }
 
-  &:active {
-    opacity: 1;
-  }
 }
 
-.middle-btn {
+.active {
+  -webkit-animation: opacify 2s;
+  -moz-animation: opacify 2s;
+  -ms-animation: opacify 2s;
+  -o-animation: opacify 2s;
+  animation: opacify 2s;
+}
+
+#middle-btn {
   background-color: #808080;
   position: absolute;
   height: $middle;
   width: $middle;
   border-radius: 50%;
-  top: calc( ( #{$simon} - #{$middle} / 2 ) / 2 );
-  left: calc( ( #{$simon} - #{$middle} / 2 ) / 2 );
+
   border: $border_thickness solid #f0f0f0;
 }
+
+@-webkit-keyframes opacify { 0% { opacity: 0.7; } 20% { opacity: 1 } 80% {opacity: 1;} 100% { opacity: 0.7;} }
+@-moz-keyframes opacify { 0% { opacity: 0.7; } 20% { opacity: 1 } 80% {opacity: 1;} 100% { opacity: 0.7;} }
+@-ms-keyframes opacify { 0% { opacity: 0.7; } 20% { opacity: 1 } 80% {opacity: 1;} 100% { opacity: 0.7;} }
+@-o-keyframes opacify { 0% { opacity: 0.7; } 20% { opacity: 1 } 80% {opacity: 1;} 100% { opacity: 0.7;} }
+@keyframes opacify { 0% { opacity: 0.7;} 20% { opacity: 1 } 80% {opacity: 1;} 100% { opacity: 0.7;} }
