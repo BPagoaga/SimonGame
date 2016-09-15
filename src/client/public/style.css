@@ -20,8 +20,10 @@ h2 {
     height: 80vw;
     width: 80vw; }
   #middle-btn {
-    top: calc( ( ( 80vw - 10vw) / 2));
-    left: calc( ( ( 80vw - 10vw) / 2) - 4px); } }
+    top: calc( ( ( 80vw - 25vw) / 2));
+    left: calc( ( ( 80vw - 25vw) / 2) - 3px);
+    height: 25vw;
+    width: 25vw; } }
 
 @media screen and (min-width: 769px) {
   .simon {
@@ -29,7 +31,9 @@ h2 {
     width: 90vh; }
   #middle-btn {
     top: calc( ( 90vh - 10vw) / 2);
-    left: calc( ( ( 90vh - 10vw) / 2) - 4px); } }
+    left: calc( ( ( 90vh - 10vw) / 2) - 4px);
+    height: 10vw;
+    width: 10vw; } }
 
 #red {
   background-color: red;
@@ -82,8 +86,6 @@ h2 {
 #middle-btn {
   background-color: #808080;
   position: absolute;
-  height: 10vw;
-  width: 10vw;
   border-radius: 50%;
   border: 2px solid #f0f0f0; }
 

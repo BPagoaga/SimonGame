@@ -1,9 +1,10 @@
 $border_thickness: 2px;
-$middle: 10vw;
+
 
 
 @media screen and (max-width: 768px){
   $simon: 80vw;
+  $middle: 25vw;
 
   .simon {
     height: $simon;
@@ -12,12 +13,15 @@ $middle: 10vw;
 
   #middle-btn {
     top: calc( ( ( #{$simon} - #{$middle}) / 2));
-    left: calc( ( ( #{$simon} - #{$middle}) / 2) - 4px);
+    left: calc( ( ( #{$simon} - #{$middle}) / 2) - 3px);
+    height: $middle;
+    width: $middle;
   }
 }
 
 @media screen and (min-width: 769px){
   $simon: 90vh;
+  $middle: 10vw;
 
   .simon {
     height: $simon;
@@ -27,6 +31,8 @@ $middle: 10vw;
   #middle-btn {
     top: calc( ( #{$simon} - #{$middle}) / 2);
     left: calc( ( ( #{$simon} - #{$middle}) / 2) - 4px);
+    height: $middle;
+    width: $middle;
   }
 }
 
@@ -93,8 +99,7 @@ $middle: 10vw;
 #middle-btn {
   background-color: #808080;
   position: absolute;
-  height: $middle;
-  width: $middle;
+
   border-radius: 50%;
 
   border: $border_thickness solid #f0f0f0;
