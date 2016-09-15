@@ -12,6 +12,7 @@ const PlayGame = (() => {
     user: "Your Turn",
     over: "Game Over !",
   }
+  let handler
 
   //elements
   let middleBtn = document.getElementById('middle-btn')
@@ -36,25 +37,24 @@ const PlayGame = (() => {
       middleBtn.firstChild.innerHTML = msg.simon
     },
 
-    userPlay(arr, callback){
+    userPlay(arr){
       // add a counter for the click
       let c = 0
 
-      function play(pad){
+      if(!handler){
+        handler = function(event){
 
-      }
+          let pad = event.currentTarget
 
-      // enabling the event listeners to get user response
-      // attaching listeners for the click on each pad
-      arr.map((pad) => {
-        pad.addEventListener('click', function(){
+
           if(c < Simon.getRandArr().length){
             Simon.addToArr(pad.id)
-            console.log(pad.id)
             c++
-            console.log(c, Simon.getUserArr())
+
             if(c === Simon.getRandArr().length){
-              loser = !callback(Simon.getRandArr(), Simon.getUserArr())
+
+              let loser = !PlayGame.isOk(Simon.getRandArr(), Simon.getUserArr())
+
               if(loser){
                 PlayGame.lostGame()
               }else{
@@ -68,8 +68,18 @@ const PlayGame = (() => {
               }
             }
           }
-        })
+        }
+
+      }
+
+      arr.map((pad) => {
+        pad.addEventListener('click', handler, false)
       })
+
+
+      // enabling the event listeners to get user response
+      // attaching listeners for the click on each pad
+
     },
 
     simonPlay(padList){
@@ -93,7 +103,7 @@ const PlayGame = (() => {
 
       var animate = setInterval(animateOpacity, 2000)
 
-      PlayGame.userPlay(padList, PlayGame.isOk)
+      PlayGame.userPlay(padList)
 
     },
 

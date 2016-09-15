@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<style type="text/css">
+  #app{
+    height: 150px;
+    background-color: red;
+  }
+</style>
+<body>
+
+  <div id="app">
+    <ul>
+      <li id="1">test</li>
+      <li id="2">test</li>
+      <li id="3">test</li>
+      <li id="4">test</li>
+    </ul>
+  </div>
+
+
+  <script type="text/javascript">
+
+    var arr = document.getElementsByTagName('ul')[0].children;
+    console.log(arr);
+
+
+    var handler = function(e){
+      el = e.currentTarget
+      console.log("clicked !"+el.id);
+    };
+
+    var newarr = [];
+
+    for (var i = 0; i < arr.length; i++) {
+      newarr.push(arr[i]);
+    }
+
+
+
+    newarr.map(function(el){
+
+      el.addEventListener('click', handler, false);
+    });
+
+  </script>
+</body>
+</html>

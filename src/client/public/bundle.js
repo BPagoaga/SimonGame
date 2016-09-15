@@ -139,6 +139,7 @@
 	    user: "Your Turn",
 	    over: "Game Over !"
 	  };
+	  var handler = void 0;
 	
 	  //elements
 	  var middleBtn = document.getElementById('middle-btn');
@@ -160,24 +161,24 @@
 	      PlayGame.simonPlay(padList);
 	      middleBtn.firstChild.innerHTML = msg.simon;
 	    },
-	    userPlay: function userPlay(arr, callback) {
+	    userPlay: function userPlay(arr) {
 	      // add a counter for the click
 	      var c = 0;
 	
-	      function play(pad) {}
+	      if (!handler) {
+	        handler = function handler(event) {
 	
-	      // enabling the event listeners to get user response
-	      // attaching listeners for the click on each pad
-	      arr.map(function (pad) {
-	        pad.addEventListener('click', function () {
+	          var pad = event.currentTarget;
+	
 	          if (c < _Simon2.default.getRandArr().length) {
 	            _Simon2.default.addToArr(pad.id);
-	            console.log(pad.id);
 	            c++;
-	            console.log(c, _Simon2.default.getUserArr());
+	
 	            if (c === _Simon2.default.getRandArr().length) {
-	              loser = !callback(_Simon2.default.getRandArr(), _Simon2.default.getUserArr());
-	              if (loser) {
+	
+	              var _loser = !PlayGame.isOk(_Simon2.default.getRandArr(), _Simon2.default.getUserArr());
+	
+	              if (_loser) {
 	                PlayGame.lostGame();
 	              } else {
 	                stage++;
@@ -190,8 +191,15 @@
 	              }
 	            }
 	          }
-	        });
+	        };
+	      }
+	
+	      arr.map(function (pad) {
+	        pad.addEventListener('click', handler, false);
 	      });
+	
+	      // enabling the event listeners to get user response
+	      // attaching listeners for the click on each pad
 	    },
 	    simonPlay: function simonPlay(padList) {
 	      var i = 0;
@@ -213,7 +221,7 @@
 	
 	      var animate = setInterval(animateOpacity, 2000);
 	
-	      PlayGame.userPlay(padList, PlayGame.isOk);
+	      PlayGame.userPlay(padList);
 	    },
 	    resetGame: function resetGame() {
 	      //empty userArr and randArr
