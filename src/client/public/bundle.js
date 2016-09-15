@@ -70,14 +70,8 @@
 	//
 	var clickedItems = [];
 	var reference = [];
-	var msg = {
-	  start: "Start",
-	  init: "Game Started"
-	};
 	
-	//elements
-	var middleBtn = document.getElementById('middle-btn');
-	middleBtn.firstChild.innerHTML = msg.start;
+	var middleBtn = _PlayGame2.default.getMiddleBtn();
 	
 	for (var i = 0; i < padNodeList.length; ++i) {
 	  padList.push(padNodeList[i]);
@@ -88,25 +82,22 @@
 	
 	// Play the game !
 	middleBtn.addEventListener('click', function () {
+	
+	  //prevent the user from clicking again after the game is launched
 	  if (!_PlayGame2.default.isStarted()) {
+	
+	    //generate the first random arr
 	    _PlayGame2.default.init();
-	    middleBtn.firstChild.innerHTML = msg.init;
-	    _PlayGame2.default.startGame();
+	
+	    // Simon 'says' his first random array
+	    // then the user enters his answer
+	    // the isOk() method compare them
+	    // if lost => game over, else => next level
+	    setTimeout(function () {
+	      _PlayGame2.default.startGame(padList);
+	    }, 1000);
 	  }
 	});
-	
-	//display simon random array !
-	reference = _Simon2.default.getRandArr();
-	reference.map(function (e) {
-	  return console.log(e);
-	});
-	
-	//user input
-	_PlayGame2.default.userPlay(padList, _PlayGame2.default.isOk);
-	// return true => next step
-	// return false => game over
-	// simon play the game
-	//...
 
 /***/ },
 /* 1 */
@@ -124,7 +115,7 @@
   \************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -141,74 +132,126 @@
 	  var started = false;
 	  var loser = false;
 	  var stage = 0;
+	  var msg = {
+	    start: "Start",
+	    init: "Game Started",
+	    simon: "Simon Playing",
+	    user: "Your Turn",
+	    over: "Game Over !"
+	  };
+	
+	  //elements
+	  var middleBtn = document.getElementById('middle-btn');
+	  middleBtn.firstChild.innerHTML = msg.start;
+	
+	  var stageMsg = document.getElementById('stage');
+	  stageMsg.innerHTML = "Stage: " + stage;
 	
 	  //public methodes
 	  return {
 	    init: function init() {
 	      // creating a random array
 	      var initRandArr = _Simon2.default.generateRandArr(5);
+	      middleBtn.firstChild.innerHTML = msg.init;
 	    },
-	    startGame: function startGame() {
+	    startGame: function startGame(padList) {
 	      started = true;
-	      PlayGame.simonPlay();
+	      console.log(_Simon2.default.getRandArr());
+	      PlayGame.simonPlay(padList);
+	      middleBtn.firstChild.innerHTML = msg.simon;
 	    },
 	    userPlay: function userPlay(arr, callback) {
 	      // add a counter for the click
 	      var c = 0;
+	
+	      function play(pad) {}
+	
 	      // enabling the event listeners to get user response
 	      // attaching listeners for the click on each pad
 	      arr.map(function (pad) {
-	
 	        pad.addEventListener('click', function () {
 	          if (c < _Simon2.default.getRandArr().length) {
 	            _Simon2.default.addToArr(pad.id);
+	            console.log(pad.id);
 	            c++;
+	            console.log(c, _Simon2.default.getUserArr());
 	            if (c === _Simon2.default.getRandArr().length) {
 	              loser = !callback(_Simon2.default.getRandArr(), _Simon2.default.getUserArr());
-	              console.log(loser);
-	              PlayGame.lostGame();
+	              if (loser) {
+	                PlayGame.lostGame();
+	              } else {
+	                stage++;
+	                c = 0;
+	                _Simon2.default.emptyUserArr();
+	                _Simon2.default.generateRandArr();
+	                started = false;
+	                stageMsg.innerHTML = "Stage: " + stage;
+	                PlayGame.startGame(arr);
+	              }
 	            }
 	          }
 	        });
 	      });
 	    },
-	    simonPlay: function simonPlay() {
+	    simonPlay: function simonPlay(padList) {
 	      var i = 0;
 	
 	      function animateOpacity() {
 	
-	        if (i >= _Simon2.default.getRandArr().length - 1) {
+	        if (i >= _Simon2.default.getRandArr().length) {
 	          clearInterval(animate);
+	          middleBtn.firstChild.innerHTML = msg.user;
+	        } else {
+	          document.getElementById(_Simon2.default.getRandArr()[i]).className = 'pad active';
+	
+	          setTimeout(function () {
+	            document.getElementById(_Simon2.default.getRandArr()[i]).className = 'pad';
+	            i++;
+	          }, 1000);
 	        }
-	
-	        document.getElementById(_Simon2.default.getRandArr()[i]).className = 'pad active';
-	
-	        setTimeout(function () {
-	          document.getElementById(_Simon2.default.getRandArr()[i]).className = 'pad';
-	        }, 1000);
-	
-	        i++;
 	      }
 	
 	      var animate = setInterval(animateOpacity, 2000);
+	
+	      PlayGame.userPlay(padList, PlayGame.isOk);
 	    },
 	    resetGame: function resetGame() {
 	      //empty userArr and randArr
-	      _Simon2.default.emptyArr();
-	      alert('Game restarted');
+	      _Simon2.default.emptyUserArr();
+	      _Simon2.default.emptyRandArr();
+	
+	      started = false;
+	      loser = false;
+	      stage = 0;
+	
+	      middleBtn.firstChild.innerHTML = msg.start;
 	    },
 	    lostGame: function lostGame() {
-	      if (loser) {
-	        alert("Game Over, try again !");
+	      middleBtn.firstChild.innerHTML = msg.over;
+	      setTimeout(function () {
 	        PlayGame.resetGame();
-	      }
+	      }, 1000);
 	    },
 	    isOk: function isOk(arr1, arr2) {
 	      //compare randArr and userArr
-	      return arr1 === arr2;
+	
+	
+	      var arr = arr1.map(function (el, i) {
+	        return arr1[i] === arr2[i];
+	      }).every(function (el) {
+	        return el;
+	      });
+	
+	      return arr;
 	    },
 	    isStarted: function isStarted() {
 	      return started;
+	    },
+	    getStage: function getStage() {
+	      return stage;
+	    },
+	    getMiddleBtn: function getMiddleBtn() {
+	      return middleBtn;
 	    }
 	  };
 	}();
@@ -256,8 +299,10 @@
 	    getRandArr: function getRandArr() {
 	      return randArr;
 	    },
-	    emptyArr: function emptyArr() {
+	    emptyUserArr: function emptyUserArr() {
 	      userArr = [];
+	    },
+	    emptyRandArr: function emptyRandArr() {
 	      randArr = [];
 	    }
 	  };

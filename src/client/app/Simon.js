@@ -29,8 +29,11 @@ const Simon = (() => {
       return randArr
     },
 
-    emptyArr(){
+    emptyUserArr(){
       userArr = []
+    },
+
+    emptyRandArr(){
       randArr = []
     }
   }

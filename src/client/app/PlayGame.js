@@ -5,6 +5,20 @@ const PlayGame = (() => {
   let started = false
   let loser = false
   let stage = 0
+  let msg = {
+    start: "Start",
+    init: "Game Started",
+    simon: "Simon Playing",
+    user: "Your Turn",
+    over: "Game Over !",
+  }
+
+  //elements
+  let middleBtn = document.getElementById('middle-btn')
+  middleBtn.firstChild.innerHTML = msg.start
+
+  let stageMsg = document.getElementById('stage')
+  stageMsg.innerHTML = "Stage: "+stage
 
   //public methodes
   return {
@@ -12,81 +26,123 @@ const PlayGame = (() => {
     init(){
       // creating a random array
       let initRandArr = Simon.generateRandArr(5)
+      middleBtn.firstChild.innerHTML = msg.init
     },
 
-    startGame(){
+    startGame(padList){
       started = true
-      PlayGame.simonPlay()
+      console.log(Simon.getRandArr())
+      PlayGame.simonPlay(padList)
+      middleBtn.firstChild.innerHTML = msg.simon
     },
 
     userPlay(arr, callback){
       // add a counter for the click
       let c = 0
+
+      function play(pad){
+
+      }
+
       // enabling the event listeners to get user response
       // attaching listeners for the click on each pad
       arr.map((pad) => {
-
-        pad.addEventListener(
-          'click',
-          function(){
-            if(c < Simon.getRandArr().length){
-              Simon.addToArr(pad.id)
-              c++
-              if(c === Simon.getRandArr().length){
-                loser = !callback(Simon.getRandArr(), Simon.getUserArr())
-                console.log(loser)
+        pad.addEventListener('click', function(){
+          if(c < Simon.getRandArr().length){
+            Simon.addToArr(pad.id)
+            console.log(pad.id)
+            c++
+            console.log(c, Simon.getUserArr())
+            if(c === Simon.getRandArr().length){
+              loser = !callback(Simon.getRandArr(), Simon.getUserArr())
+              if(loser){
                 PlayGame.lostGame()
+              }else{
+                stage++
+                c = 0
+                Simon.emptyUserArr()
+                Simon.generateRandArr()
+                started = false
+                stageMsg.innerHTML = "Stage: "+stage
+                PlayGame.startGame(arr)
               }
             }
           }
-        )
+        })
       })
     },
 
-    simonPlay(){
+    simonPlay(padList){
       let i = 0
 
       function animateOpacity(){
 
-        if(i>= Simon.getRandArr().length - 1){
+        if(i>= Simon.getRandArr().length){
           clearInterval(animate)
+          middleBtn.firstChild.innerHTML = msg.user
+        }else{
+          document.getElementById(Simon.getRandArr()[i]).className = 'pad active'
+
+          setTimeout(function(){
+            document.getElementById(Simon.getRandArr()[i]).className = 'pad'
+            i++
+          },1000)
         }
-
-        document.getElementById(Simon.getRandArr()[i]).className = 'pad active'
-
-        setTimeout(function(){
-          document.getElementById(Simon.getRandArr()[i]).className = 'pad'
-        },1000)
-
-        i++
 
       }
 
       var animate = setInterval(animateOpacity, 2000)
 
+      PlayGame.userPlay(padList, PlayGame.isOk)
+
     },
 
     resetGame(){
       //empty userArr and randArr
-      Simon.emptyArr()
-      alert('Game restarted')
+      Simon.emptyUserArr()
+      Simon.emptyRandArr()
+
+      started = false
+      loser = false
+      stage = 0
+
+      middleBtn.firstChild.innerHTML = msg.start
     },
 
     lostGame(){
-      if(loser){
-        alert("Game Over, try again !")
+      middleBtn.firstChild.innerHTML = msg.over
+      setTimeout(function(){
         PlayGame.resetGame()
-      }
+      }, 1000)
     },
 
     isOk(arr1, arr2){
       //compare randArr and userArr
-      return arr1 === arr2
+
+
+      let arr = arr1
+        .map( (el, i) => {
+          return arr1[i] === arr2[i]
+        })
+        .every(function(el){
+          return el
+        })
+
+      return arr
     },
 
     isStarted(){
       return started
+    },
+
+    getStage(){
+      return stage
+    },
+
+    getMiddleBtn(){
+      return middleBtn
     }
+
   }
 })()
 

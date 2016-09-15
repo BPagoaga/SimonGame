@@ -12,6 +12,9 @@ h1 {
 h2 {
   color: green; }
 
+#stage {
+  color: #f0f0f0; }
+
 @media screen and (max-width: 768px) {
   .simon {
     height: 80vw;

@@ -9,15 +9,8 @@ let padList = []
 //
 let clickedItems = []
 let reference = []
-let msg = {
-  start: "Start",
-  init: "Game Started"
-}
 
-//elements
-let middleBtn = document.getElementById('middle-btn')
-middleBtn.firstChild.innerHTML = msg.start
-
+let middleBtn = PlayGame.getMiddleBtn()
 
 for (var i = 0; i < padNodeList.length; ++i) {
   padList.push(padNodeList[i])
@@ -28,24 +21,24 @@ for (var i = 0; i < padNodeList.length; ++i) {
 
 // Play the game !
 middleBtn.addEventListener('click', function(){
+
+  //prevent the user from clicking again after the game is launched
   if(!PlayGame.isStarted()){
+
+    //generate the first random arr
     PlayGame.init()
-    middleBtn.firstChild.innerHTML = msg.init
-    PlayGame.startGame()
+
+    // Simon 'says' his first random array
+    // then the user enters his answer
+    // the isOk() method compare them
+    // if lost => game over, else => next level
+    setTimeout(function(){
+      PlayGame.startGame(padList)
+    }, 1000)
+
   }
 })
 
-
-//display simon random array !
-reference = Simon.getRandArr()
-reference.map( (e) => console.log(e) )
-
-//user input
-PlayGame.userPlay(padList, PlayGame.isOk)
-// return true => next step
-// return false => game over
-// simon play the game
-//...
 
 
 
