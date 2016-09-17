@@ -36,6 +36,11 @@ $border_thickness: 2px;
   }
 }
 
+footer {
+  padding: 10px 0;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
 
 #red {
   background-color: red;
@@ -96,10 +101,17 @@ $border_thickness: 2px;
   animation: opacify 2s;
 }
 
+.btn {
+  border-radius: 5px;
+  box-shadow: none;
+  border: none;
+  padding: 5px 10px;
+}
+
 #middle-btn {
   background-color: #808080;
   position: absolute;
-
+  cursor: pointer;
   border-radius: 50%;
 
   border: $border_thickness solid #f0f0f0;

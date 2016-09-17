@@ -11,6 +11,8 @@ let clickedItems = []
 let reference = []
 
 let middleBtn = PlayGame.getMiddleBtn()
+let restart = document.getElementById('restart')
+restart.addEventListener('click', () => PlayGame.resetGame())
 
 for (var i = 0; i < padNodeList.length; ++i) {
   padList.push(padNodeList[i])

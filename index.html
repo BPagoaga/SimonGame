@@ -13,13 +13,29 @@
 
     <div class="container">
 
+      <audio id="redsound">
+        <source src="https://s3.amazonaws.com/freecodecamp/simonSound1.mp3">
+      </audio>
+
+      <audio id="greensound">
+        <source src="https://s3.amazonaws.com/freecodecamp/simonSound2.mp3">
+      </audio>
+
+      <audio id="bluesound">
+        <source src="https://s3.amazonaws.com/freecodecamp/simonSound3.mp3">
+      </audio>
+
+      <audio id="yellowsound">
+        <source src="https://s3.amazonaws.com/freecodecamp/simonSound4.mp3">
+      </audio>
+
       <header>
         <h1>Simon Game !</h1>
         <h2>with FreeCodeCamp</h2>
         <h3 id="stage">Stage : <span></span></h3>
       </header>
 
-      <div class="simon">
+      <main class="simon">
 
         <div id="red" class="pad" ></div>
         <div id="green" class="pad"></div>
@@ -29,7 +45,11 @@
         <div id="yellow" class="pad"></div>
         <button id="middle-btn"><h3></h3></button>
 
-      </div>
+      </main>
+
+      <footer>
+        <button class="btn" id="restart">Restart</button>
+      </footer>
 
     </div>
 

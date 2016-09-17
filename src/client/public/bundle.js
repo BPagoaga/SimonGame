@@ -72,6 +72,10 @@
 	var reference = [];
 	
 	var middleBtn = _PlayGame2.default.getMiddleBtn();
+	var restart = document.getElementById('restart');
+	restart.addEventListener('click', function () {
+	  return _PlayGame2.default.resetGame();
+	});
 	
 	for (var i = 0; i < padNodeList.length; ++i) {
 	  padList.push(padNodeList[i]);
@@ -132,6 +136,7 @@
 	  var started = false;
 	  var loser = false;
 	  var stage = 0;
+	  var step = _Simon2.default.getRandArr().length;
 	  var msg = {
 	    start: "Start",
 	    init: "Game Started",
@@ -139,14 +144,21 @@
 	    user: "Your Turn",
 	    over: "Game Over !"
 	  };
-	  var handler = void 0;
+	  var _handler = void 0;
+	
+	  var players = {
+	    red: document.querySelector('#redsound'),
+	    green: document.querySelector('#greensound'),
+	    blue: document.querySelector('#bluesound'),
+	    yellow: document.querySelector('#yellowsound')
+	  };
 	
 	  //elements
 	  var middleBtn = document.getElementById('middle-btn');
 	  middleBtn.firstChild.innerHTML = msg.start;
 	
 	  var stageMsg = document.getElementById('stage');
-	  stageMsg.innerHTML = "Stage: " + stage;
+	  stageMsg.innerHTML = "Stage: " + stage + ', Steps: ' + step;
 	
 	  //public methodes
 	  return {
@@ -154,6 +166,8 @@
 	      // creating a random array
 	      var initRandArr = _Simon2.default.generateRandArr(5);
 	      middleBtn.firstChild.innerHTML = msg.init;
+	      step = _Simon2.default.getRandArr().length;
+	      stageMsg.innerHTML = "Stage: " + stage + ', Steps: ' + step;
 	    },
 	    startGame: function startGame(padList) {
 	      started = true;
@@ -165,17 +179,23 @@
 	      // add a counter for the click
 	      var c = 0;
 	
-	      if (!handler) {
-	        handler = function handler(event) {
+	      //declare the handler only once so the event does not fire multiple times with one click
+	      if (!_handler) {
+	        _handler = function handler(event) {
 	
 	          var pad = event.currentTarget;
+	          players[pad.id].play();
+	          step--;
+	          stageMsg.innerHTML = "Stage: " + stage + ', Steps: ' + step;
 	
 	          if (c < _Simon2.default.getRandArr().length) {
 	            _Simon2.default.addToArr(pad.id);
 	            c++;
 	
 	            if (c === _Simon2.default.getRandArr().length) {
-	
+	              arr.map(function (pad, i) {
+	                pad.removeEventListener('click', _handler, false);
+	              });
 	              var _loser = !PlayGame.isOk(_Simon2.default.getRandArr(), _Simon2.default.getUserArr());
 	
 	              if (_loser) {
@@ -186,7 +206,8 @@
 	                _Simon2.default.emptyUserArr();
 	                _Simon2.default.generateRandArr();
 	                started = false;
-	                stageMsg.innerHTML = "Stage: " + stage;
+	                step = _Simon2.default.getRandArr().length;
+	                stageMsg.innerHTML = "Stage: " + stage + ', Steps: ' + step;
 	                PlayGame.startGame(arr);
 	              }
 	            }
@@ -194,14 +215,12 @@
 	        };
 	      }
 	
-	      arr.map(function (pad) {
-	        pad.addEventListener('click', handler, false);
-	      });
-	
 	      // enabling the event listeners to get user response
 	      // attaching listeners for the click on each pad
 	    },
-	    simonPlay: function simonPlay(padList) {
+	    simonPlay: function simonPlay(arr) {
+	      //disable click when simon plays ??
+	      //
 	      var i = 0;
 	
 	      function animateOpacity() {
@@ -209,19 +228,27 @@
 	        if (i >= _Simon2.default.getRandArr().length) {
 	          clearInterval(animate);
 	          middleBtn.firstChild.innerHTML = msg.user;
+	          arr.map(function (pad, i) {
+	            pad.addEventListener('click', _handler, false);
+	          });
 	        } else {
-	          document.getElementById(_Simon2.default.getRandArr()[i]).className = 'pad active';
+	          (function () {
+	            var padId = _Simon2.default.getRandArr()[i];
+	            var pad = document.getElementById(padId);
+	            pad.className = 'pad active';
+	            players[padId].play();
 	
-	          setTimeout(function () {
-	            document.getElementById(_Simon2.default.getRandArr()[i]).className = 'pad';
-	            i++;
-	          }, 1000);
+	            setTimeout(function () {
+	              pad.className = 'pad';
+	              i++;
+	            }, 1000);
+	          })();
 	        }
 	      }
 	
 	      var animate = setInterval(animateOpacity, 2000);
 	
-	      PlayGame.userPlay(padList);
+	      PlayGame.userPlay(arr);
 	    },
 	    resetGame: function resetGame() {
 	      //empty userArr and randArr
