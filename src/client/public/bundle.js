@@ -72,9 +72,16 @@
 	var reference = [];
 	
 	var middleBtn = _PlayGame2.default.getMiddleBtn();
+	
 	var restart = document.getElementById('restart');
 	restart.addEventListener('click', function () {
-	  return _PlayGame2.default.resetGame();
+	  return _PlayGame2.default.resetGame(padList);
+	});
+	
+	var togglestrict = document.getElementById('strict');
+	togglestrict.addEventListener('click', function () {
+	  _PlayGame2.default.toggleStrict();
+	  return;
 	});
 	
 	for (var i = 0; i < padNodeList.length; ++i) {
@@ -91,15 +98,13 @@
 	  if (!_PlayGame2.default.isStarted()) {
 	
 	    //generate the first random arr
-	    _PlayGame2.default.init();
+	    _PlayGame2.default.init(padList);
 	
 	    // Simon 'says' his first random array
 	    // then the user enters his answer
 	    // the isOk() method compare them
 	    // if lost => game over, else => next level
-	    setTimeout(function () {
-	      _PlayGame2.default.startGame(padList);
-	    }, 1000);
+	
 	  }
 	});
 
@@ -135,6 +140,7 @@
 	  //private attributes
 	  var started = false;
 	  var loser = false;
+	  var strict = false;
 	  var stage = 0;
 	  var step = _Simon2.default.getRandArr().length;
 	  var msg = {
@@ -142,7 +148,10 @@
 	    init: "Game Started",
 	    simon: "Simon Playing",
 	    user: "Your Turn",
-	    over: "Game Over !"
+	    over: "Game Over !",
+	    win: "You won the game !",
+	    wrong: "Wrong Button !",
+	    restart: "Restarting..."
 	  };
 	  var _handler = void 0;
 	
@@ -162,18 +171,19 @@
 	
 	  //public methodes
 	  return {
-	    init: function init() {
+	    init: function init(arr) {
 	      // creating a random array
 	      var initRandArr = _Simon2.default.generateRandArr(5);
 	      middleBtn.firstChild.innerHTML = msg.init;
 	      step = _Simon2.default.getRandArr().length;
 	      stageMsg.innerHTML = "Stage: " + stage + ', Steps: ' + step;
+	      setTimeout(function () {
+	        PlayGame.startGame(arr);
+	      }, 1000);
 	    },
 	    startGame: function startGame(padList) {
 	      started = true;
-	      console.log(_Simon2.default.getRandArr());
 	      PlayGame.simonPlay(padList);
-	      middleBtn.firstChild.innerHTML = msg.simon;
 	    },
 	    userPlay: function userPlay(arr) {
 	      // add a counter for the click
@@ -188,49 +198,65 @@
 	          step--;
 	          stageMsg.innerHTML = "Stage: " + stage + ', Steps: ' + step;
 	
-	          if (c < _Simon2.default.getRandArr().length) {
+	          if (_Simon2.default.getRandArr()[c] === pad.id) {
 	            _Simon2.default.addToArr(pad.id);
 	            c++;
 	
 	            if (c === _Simon2.default.getRandArr().length) {
+	              //disable user input when he finishes his turn, until simon finishes playing
 	              arr.map(function (pad, i) {
 	                pad.removeEventListener('click', _handler, false);
 	              });
-	              var _loser = !PlayGame.isOk(_Simon2.default.getRandArr(), _Simon2.default.getUserArr());
-	
-	              if (_loser) {
-	                PlayGame.lostGame();
-	              } else {
-	                stage++;
-	                c = 0;
-	                _Simon2.default.emptyUserArr();
-	                _Simon2.default.generateRandArr();
-	                started = false;
-	                step = _Simon2.default.getRandArr().length;
-	                stageMsg.innerHTML = "Stage: " + stage + ', Steps: ' + step;
-	                PlayGame.startGame(arr);
+	              stage++;
+	              if (stage === 20) {
+	                PlayGame.winGame(arr);
 	              }
+	              c = 0;
+	              _Simon2.default.emptyUserArr();
+	              _Simon2.default.generateRandArr();
+	              started = false;
+	              step = _Simon2.default.getRandArr().length;
+	              stageMsg.innerHTML = "Stage: " + stage + ', Steps: ' + step;
+	              PlayGame.startGame(arr);
+	            }
+	          } else {
+	            if (!strict) {
+	              //disable user input when we fail
+	              arr.map(function (pad) {
+	                pad.removeEventListener('click', _handler, false);
+	              });
+	              middleBtn.firstChild.innerHTML = msg.wrong;
+	              _Simon2.default.emptyUserArr();
+	              setTimeout(function () {
+	                PlayGame.simonPlay(arr);
+	              }, 1000);
+	            } else {
+	              PlayGame.lostGame(arr);
 	            }
 	          }
 	        };
 	      }
 	
-	      // enabling the event listeners to get user response
-	      // attaching listeners for the click on each pad
+	      if (arr && started) {
+	        middleBtn.firstChild.innerHTML = msg.user;
+	        arr.map(function (pad) {
+	          pad.addEventListener('click', _handler, false);
+	        });
+	      } else {
+	        return false;
+	      }
 	    },
 	    simonPlay: function simonPlay(arr) {
-	      //disable click when simon plays ??
 	      //
 	      var i = 0;
+	      middleBtn.firstChild.innerHTML = msg.simon;
 	
-	      function animateOpacity() {
+	      function round() {
 	
 	        if (i >= _Simon2.default.getRandArr().length) {
 	          clearInterval(animate);
-	          middleBtn.firstChild.innerHTML = msg.user;
-	          arr.map(function (pad, i) {
-	            pad.addEventListener('click', _handler, false);
-	          });
+	
+	          PlayGame.userPlay(arr);
 	        } else {
 	          (function () {
 	            var padId = _Simon2.default.getRandArr()[i];
@@ -241,16 +267,15 @@
 	            setTimeout(function () {
 	              pad.className = 'pad';
 	              i++;
-	            }, 1000);
+	            }, 500);
 	          })();
 	        }
 	      }
 	
-	      var animate = setInterval(animateOpacity, 2000);
-	
-	      PlayGame.userPlay(arr);
+	      var animate = setInterval(round, 1000);
 	    },
-	    resetGame: function resetGame() {
+	    resetGame: function resetGame(arr) {
+	      middleBtn.firstChild.innerHTML = msg.restart;
 	      //empty userArr and randArr
 	      _Simon2.default.emptyUserArr();
 	      _Simon2.default.emptyRandArr();
@@ -259,25 +284,25 @@
 	      loser = false;
 	      stage = 0;
 	
-	      middleBtn.firstChild.innerHTML = msg.start;
-	    },
-	    lostGame: function lostGame() {
-	      middleBtn.firstChild.innerHTML = msg.over;
+	      arr.map(function (pad) {
+	        pad.removeEventListener('click', _handler, false);
+	      });
 	      setTimeout(function () {
-	        PlayGame.resetGame();
+	        middleBtn.firstChild.innerHTML = msg.start;
+	        PlayGame.init();
 	      }, 1000);
 	    },
-	    isOk: function isOk(arr1, arr2) {
-	      //compare randArr and userArr
-	
-	
-	      var arr = arr1.map(function (el, i) {
-	        return arr1[i] === arr2[i];
-	      }).every(function (el) {
-	        return el;
-	      });
-	
-	      return arr;
+	    lostGame: function lostGame(arr) {
+	      middleBtn.firstChild.innerHTML = msg.over;
+	      setTimeout(function () {
+	        PlayGame.resetGame(arr);
+	      }, 2000);
+	    },
+	    winGame: function winGame(arr) {
+	      middleBtn.firstChild.innerHTML = msg.win;
+	      setTimeout(function () {
+	        PlayGame.resetGame(arr);
+	      }, 2000);
 	    },
 	    isStarted: function isStarted() {
 	      return started;
@@ -287,6 +312,9 @@
 	    },
 	    getMiddleBtn: function getMiddleBtn() {
 	      return middleBtn;
+	    },
+	    toggleStrict: function toggleStrict() {
+	      strict = !strict;
 	    }
 	  };
 	}();

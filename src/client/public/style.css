@@ -60,6 +60,13 @@ footer {
   background-color: yellow;
   border-bottom-right-radius: 100%; }
 
+#strict {
+  visibility: hidden; }
+
+#strict ~ .btn {
+  background: red;
+  color: #f0f0f0; }
+
 .container {
   height: 75vh;
   width: 75vw;
@@ -93,7 +100,19 @@ footer {
   border-radius: 5px;
   box-shadow: none;
   border: none;
-  padding: 5px 10px; }
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  -webkit-user-select: none;
+  /* Chrome all / Safari all */
+  -moz-user-select: none;
+  /* Firefox all */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none; }
+
+input:checked#strict ~ .btn {
+  background-color: green;
+  color: #f0f0f0; }
 
 #middle-btn {
   background-color: #808080;

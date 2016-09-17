@@ -11,8 +11,15 @@ let clickedItems = []
 let reference = []
 
 let middleBtn = PlayGame.getMiddleBtn()
+
 let restart = document.getElementById('restart')
-restart.addEventListener('click', () => PlayGame.resetGame())
+restart.addEventListener('click', () => PlayGame.resetGame(padList))
+
+let togglestrict = document.getElementById('strict')
+togglestrict.addEventListener('click', () => {
+  PlayGame.toggleStrict()
+  return
+})
 
 for (var i = 0; i < padNodeList.length; ++i) {
   padList.push(padNodeList[i])
@@ -28,15 +35,13 @@ middleBtn.addEventListener('click', function(){
   if(!PlayGame.isStarted()){
 
     //generate the first random arr
-    PlayGame.init()
+    PlayGame.init(padList)
 
     // Simon 'says' his first random array
     // then the user enters his answer
     // the isOk() method compare them
     // if lost => game over, else => next level
-    setTimeout(function(){
-      PlayGame.startGame(padList)
-    }, 1000)
+
 
   }
 })

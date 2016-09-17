@@ -4,6 +4,7 @@ const PlayGame = (() => {
   //private attributes
   let started = false
   let loser = false
+  let strict = false
   let stage = 0
   let step = Simon.getRandArr().length
   let msg = {
@@ -12,6 +13,9 @@ const PlayGame = (() => {
     simon: "Simon Playing",
     user: "Your Turn",
     over: "Game Over !",
+    win: "You won the game !",
+    wrong: "Wrong Button !",
+    restart: "Restarting..."
   }
   let handler
 
@@ -33,19 +37,20 @@ const PlayGame = (() => {
   //public methodes
   return {
 
-    init(){
+    init(arr){
       // creating a random array
       let initRandArr = Simon.generateRandArr(5)
       middleBtn.firstChild.innerHTML = msg.init
       step = Simon.getRandArr().length
       stageMsg.innerHTML = "Stage: "+stage+', Steps: '+step
+      setTimeout(function(){
+        PlayGame.startGame(arr)
+      }, 1000)
     },
 
     startGame(padList){
       started = true
-      console.log(Simon.getRandArr())
       PlayGame.simonPlay(padList)
-      middleBtn.firstChild.innerHTML = msg.simon
     },
 
     userPlay(arr){
@@ -61,55 +66,68 @@ const PlayGame = (() => {
           step--
           stageMsg.innerHTML = "Stage: "+stage+', Steps: '+step
 
-          if(c < Simon.getRandArr().length){
+          if(Simon.getRandArr()[c] === pad.id){
             Simon.addToArr(pad.id)
             c++
 
-            if(c === Simon.getRandArr().length){
+            if (c === Simon.getRandArr().length) {
+              //disable user input when he finishes his turn, until simon finishes playing
               arr.map((pad, i) => {
                 pad.removeEventListener('click', handler, false)
               })
-              let loser = !PlayGame.isOk(Simon.getRandArr(), Simon.getUserArr())
-
-              if(loser){
-                PlayGame.lostGame()
-              }else{
-                stage++
-                c = 0
-                Simon.emptyUserArr()
-                Simon.generateRandArr()
-                started = false
-                step = Simon.getRandArr().length
-                stageMsg.innerHTML = "Stage: "+stage+', Steps: '+step
-                PlayGame.startGame(arr)
+              stage++
+              if(stage === 20){
+                PlayGame.winGame(arr)
               }
+              c = 0
+              Simon.emptyUserArr()
+              Simon.generateRandArr()
+              started = false
+              step = Simon.getRandArr().length
+              stageMsg.innerHTML = "Stage: "+stage+', Steps: '+step
+              PlayGame.startGame(arr)
+            }
+
+          }else{
+            if(!strict){
+              //disable user input when we fail
+              arr.map((pad) => {
+                pad.removeEventListener('click', handler, false)
+              })
+              middleBtn.firstChild.innerHTML = msg.wrong
+              Simon.emptyUserArr()
+              setTimeout(
+                function(){
+                  PlayGame.simonPlay(arr)
+                }, 1000)
+            }else{
+              PlayGame.lostGame(arr)
             }
           }
         }
-
       }
 
-
-
-
-      // enabling the event listeners to get user response
-      // attaching listeners for the click on each pad
-
+      if(arr && started){
+        middleBtn.firstChild.innerHTML = msg.user
+        arr.map((pad) => {
+          pad.addEventListener('click', handler, false)
+        })
+      }else{
+        return false
+      }
     },
 
     simonPlay(arr){
-      //disable click when simon plays ??
       //
       let i = 0
+      middleBtn.firstChild.innerHTML = msg.simon
 
-      function animateOpacity(){
+      function round(){
 
         if(i>= Simon.getRandArr().length){
           clearInterval(animate)
-          middleBtn.firstChild.innerHTML = msg.user
-          arr.map((pad, i) => {
-            pad.addEventListener('click', handler, false)
-          })
+
+          PlayGame.userPlay(arr)
         }else{
           let padId = Simon.getRandArr()[i]
           let pad = document.getElementById(padId)
@@ -119,18 +137,17 @@ const PlayGame = (() => {
           setTimeout(function(){
             pad.className = 'pad'
             i++
-          },1000)
+          },500)
         }
 
       }
 
-      var animate = setInterval(animateOpacity, 2000)
-
-      PlayGame.userPlay(arr)
+      var animate = setInterval(round, 1000)
 
     },
 
-    resetGame(){
+    resetGame(arr){
+      middleBtn.firstChild.innerHTML = msg.restart
       //empty userArr and randArr
       Simon.emptyUserArr()
       Simon.emptyRandArr()
@@ -139,29 +156,30 @@ const PlayGame = (() => {
       loser = false
       stage = 0
 
-      middleBtn.firstChild.innerHTML = msg.start
+
+
+      arr.map((pad) => {
+        pad.removeEventListener('click', handler, false)
+      })
+      setTimeout(() => {
+        middleBtn.firstChild.innerHTML = msg.start
+        PlayGame.init()
+      }, 1000)
+
     },
 
-    lostGame(){
+    lostGame(arr){
       middleBtn.firstChild.innerHTML = msg.over
       setTimeout(function(){
-        PlayGame.resetGame()
-      }, 1000)
+        PlayGame.resetGame(arr)
+      }, 2000)
     },
 
-    isOk(arr1, arr2){
-      //compare randArr and userArr
-
-
-      let arr = arr1
-        .map( (el, i) => {
-          return arr1[i] === arr2[i]
-        })
-        .every(function(el){
-          return el
-        })
-
-      return arr
+    winGame(arr){
+      middleBtn.firstChild.innerHTML = msg.win
+      setTimeout(function(){
+        PlayGame.resetGame(arr)
+      }, 2000)
     },
 
     isStarted(){
@@ -174,6 +192,10 @@ const PlayGame = (() => {
 
     getMiddleBtn(){
       return middleBtn
+    },
+
+    toggleStrict(){
+      strict = !strict
     }
 
   }
