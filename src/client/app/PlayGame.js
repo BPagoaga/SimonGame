@@ -108,6 +108,8 @@ const PlayGame = (() => {
       }
 
       if(arr && started){
+
+
         middleBtn.firstChild.innerHTML = msg.user
         arr.map((pad) => {
           pad.addEventListener('click', handler, false)
@@ -156,14 +158,13 @@ const PlayGame = (() => {
       loser = false
       stage = 0
 
-
-
       arr.map((pad) => {
         pad.removeEventListener('click', handler, false)
       })
+
       setTimeout(() => {
         middleBtn.firstChild.innerHTML = msg.start
-        PlayGame.init()
+        PlayGame.init(arr)
       }, 1000)
 
     },

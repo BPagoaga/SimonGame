@@ -238,6 +238,7 @@
 	      }
 	
 	      if (arr && started) {
+	
 	        middleBtn.firstChild.innerHTML = msg.user;
 	        arr.map(function (pad) {
 	          pad.addEventListener('click', _handler, false);
@@ -287,9 +288,10 @@
 	      arr.map(function (pad) {
 	        pad.removeEventListener('click', _handler, false);
 	      });
+	
 	      setTimeout(function () {
 	        middleBtn.firstChild.innerHTML = msg.start;
-	        PlayGame.init();
+	        PlayGame.init(arr);
 	      }, 1000);
 	    },
 	    lostGame: function lostGame(arr) {
